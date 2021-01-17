@@ -41,7 +41,7 @@ void os_stat(void)
     fh = Fopen("/kern/loadavg", 0);
     sz = Fread(fh, sizeof(buff), buff);
     buff[sz] = '\0';
-    dbg("buff=%s\r\n", buff);
+    dbg("buff=%s", buff);
     sscanf(buff, "%f %f %f %d/%d %d\n",
            &gl_st.loadavg.loadavg1,
            &gl_st.loadavg.loadavg2,
@@ -59,10 +59,10 @@ void os_stat(void)
     fh = Fopen("/kern/stat", 0);
     sz = Fread(fh, sizeof(buff), buff);
     buff[sz] = '\0';
-    dbg("buff=%s\r\n", buff);
-    sscanf(buff, "%s %ld %ld %ld %ld\n", buff,
-           &gl_st.stat.user, &gl_st.stat.nice,
-           &gl_st.stat.sys, &gl_st.stat.sys);
+    dbg("buff=%s", buff);
+    sscanf(buff, "cpu %ld %ld %ld %ld",
+           &gl_st.stat.user, &gl_st.stat.sys,
+           &gl_st.stat.nice, &gl_st.stat.other);
     Fclose(fh);
     dbg("stat: user: %ld, sys: %ld, nice: %ld, other: %ld\r\n",
         gl_st.stat.user, gl_st.stat.sys, gl_st.stat.nice, gl_st.stat.other);
