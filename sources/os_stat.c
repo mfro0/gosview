@@ -9,6 +9,7 @@
 #else
 #define dbg(format, arg...) do { ; } while (0)
 #endif /* DEBUG */
+#define err(format, arg...) do { fprintf(stderr, "" format, ##arg); } while (0)
 
 struct os_stat
 {
@@ -34,21 +35,32 @@ struct os_stat
 void os_stat(void)
 {
     char buff[512];
-    FILE *fh;
+    long res;
+    short fh;
     long sz;
     int last_pid;
 
-    fh = Fopen("/kern/loadavg", 0);
-    sz = Fread(fh, sizeof(buff), buff);
-    buff[sz] = '\0';
-    dbg("buff=%s", buff);
-    sscanf(buff, "%f %f %f %d/%d %d\n",
+    res = Fopen("/kern/loadavg", 0);
+    if (res > 0)
+    {
+        fh = (short) res;
+        sz = Fread(fh, sizeof(buff), buff);
+        buff[sz] = '\0';
+        dbg("buff=%s", buff);
+
+        sscanf(buff, "%f %f %f %d/%d %d\n",
            &gl_st.loadavg.loadavg1,
            &gl_st.loadavg.loadavg2,
            &gl_st.loadavg.loadavg3,
            &gl_st.loadavg.running,
            &gl_st.loadavg.tasks, &last_pid);
-    Fclose(fh);
+        Fclose(fh);
+    }
+    else
+    {
+        err("kern/loadavg cannot be opened\r\n");
+        exit(1);
+    }
 
     dbg("loadavg: %f, %f, %f, running: %d tasks: %d\r\n",
         gl_st.loadavg.loadavg1,
@@ -56,16 +68,25 @@ void os_stat(void)
         gl_st.loadavg.loadavg3,
         gl_st.loadavg.running, gl_st.loadavg.tasks);
 
-    fh = Fopen("/kern/stat", 0);
-    sz = Fread(fh, sizeof(buff), buff);
-    buff[sz] = '\0';
-    dbg("buff=%s", buff);
-    sscanf(buff, "cpu %ld %ld %ld %ld",
+    res = Fopen("/kern/stat", 0);
+    if (res > 0)
+    {
+        fh = (short) res;
+        sz = Fread(fh, sizeof(buff), buff);
+        buff[sz] = '\0';
+        dbg("buff=%s", buff);
+        sscanf(buff, "cpu %ld %ld %ld %ld",
            &gl_st.stat.user, &gl_st.stat.sys,
            &gl_st.stat.nice, &gl_st.stat.other);
-    Fclose(fh);
-    dbg("stat: user: %ld, sys: %ld, nice: %ld, other: %ld\r\n",
-        gl_st.stat.user, gl_st.stat.sys, gl_st.stat.nice, gl_st.stat.other);
+        Fclose(fh);
+        dbg("stat: user: %ld, sys: %ld, nice: %ld, other: %ld\r\n",
+            gl_st.stat.user, gl_st.stat.sys, gl_st.stat.nice, gl_st.stat.other);
+    }
+    else
+    {
+        err("error opening /kern/stat\r\n");
+        exit(1);
+    }
 
 #ifdef NOT_USED
     fp = fopen("/kern/meminfo", "r");
