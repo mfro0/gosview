@@ -8,13 +8,8 @@
 
 #include "window.h"
 #include "statwindow.h"
-#include "bench.h"
-#include "menu.h"
-#include "rsrc.h"
 #include "util.h"
 #include "global.h"
-#include "dialog.h"
-#include "fontwindow.h"
 
 //#define DEBUG
 #ifdef DEBUG
@@ -33,16 +28,6 @@ short my;            /* mouse x and y pos. */
 short butdown;       /* button state tested for, UP/DOWN */
 short ret;           /* dummy return variable */
 bool quit;
-
-OBJECT *popup_tree;
-
-struct dialog_handler *about_dialog;
-struct dialog_handler *prefs_dialog;
-
-static short about_exit_handler(OBJECT *dialog, short exit_obj);
-static short prefs_exit_handler(OBJECT *dialog, short exit_obj);
-static short prefs_touchexit_handler(OBJECT *dialog, short exit_obj);
-static short prefs_init_handler(OBJECT *dialog);
 
 struct window *statwin = NULL;
 
@@ -76,108 +61,6 @@ int main(int argc, char *argv[])
     multi();
 
     return 0;
-}
-
-static short about_exit_handler(OBJECT *dialog, short exit_obj)
-{
-    printf("exit_obj=%d\r\n", exit_obj);
-    return 0;
-}
-
-static short prefs_init_handler(OBJECT *dial)
-{
-    /*
-     * preset the button texts of the buttons that
-     * activate the pulldown menus with the first entry of the pulldowns
-     */
-    dial[PREFS_PUPTEST1].ob_spec.free_string = popup_tree[POPUP_ITEM1].ob_spec.free_string;
-    dial[PREFS_PUPTEST2].ob_spec.free_string = popup_tree[POPUP_ICON1].ob_spec.iconblk->ib_ptext;
-
-    return 0;
-}
-
-static short prefs_exit_handler(OBJECT *dialog, short exit_obj)
-{
-    printf("exit_obj=%d\r\n", exit_obj);
-    return 0;
-}
-
-static short find_checked(OBJECT *tree, short start_index)
-{
-    short index;
-
-    for (index = start_index;
-         tree[index].ob_next != tree[tree[index].ob_next].ob_tail;
-         index = tree[index].ob_next)
-    {
-        short state = tree[index].ob_state;
-
-        if (state & OS_CHECKED)
-        {
-            return index;
-        }
-    }
-    tree[start_index].ob_state |= OS_CHECKED;
-    return start_index;
-}
-
-static MENU mnu;
-
-static short prefs_touchexit_handler(OBJECT *dialog, short touchexit_obj)
-{
-
-    short x;
-    short y;
-    short previous_item = NIL;
-    short current_item;
-
-    /*
-     * get the onscreen coordinate of the button that triggered us
-     * so we will be able to position and pop up our menu over it
-     */
-    objc_offset(dialog, touchexit_obj, &x, &y);
-
-    /*
-     * select the popup menu that belongs to the triggering button
-     */
-    if (touchexit_obj == PREFS_PUPTEST1)
-    {
-        mnu.mn_tree = popup_tree;
-        mnu.mn_menu = POPUP_STRINGS;
-        mnu.mn_item = previous_item = find_checked(popup_tree, POPUP_ITEM1);
-        mnu.mn_scroll = POPUP_ITEM1;
-        y -= popup_tree[POPUP_STRINGS].ob_height / 2;
-    }
-    else if (touchexit_obj == PREFS_PUPTEST2)
-    {
-        mnu.mn_tree = popup_tree;
-        mnu.mn_menu = POPUP_ICONS;
-        mnu.mn_item = previous_item = find_checked(popup_tree, POPUP_ICON1);
-        mnu.mn_scroll = POPUP_ICON1;
-        y -= popup_tree[POPUP_ICONS].ob_height / 2;
-    }
-
-    /*
-     * bring the menu on screen
-     */
-    menu_popup(&mnu, x, y, &mnu);
-
-
-    current_item = mnu.mn_item;
-    if (current_item != previous_item)
-    {
-        popup_tree[previous_item].ob_state &= ~OS_CHECKED;
-        popup_tree[current_item].ob_state |= OS_CHECKED;
-        if (touchexit_obj == PREFS_PUPTEST1)
-        {
-            dialog[touchexit_obj].ob_spec.free_string = popup_tree[current_item].ob_spec.free_string;
-        }
-        else if (touchexit_obj == PREFS_PUPTEST2)
-        {
-            dialog[touchexit_obj].ob_spec.free_string = popup_tree[current_item].ob_spec.iconblk->ib_ptext;
-        }
-    }
-    return touchexit_obj;
 }
 
 static int timer_cb(struct window *wi)
