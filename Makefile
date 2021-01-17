@@ -39,7 +39,7 @@ STRIP=$(CROSSBINDIR)strip
 STACK=$(CROSSBINDIR)stack
 NATIVECC=gcc
 
-APP=bench.app
+APP=osview.app
 TEST_APP=$(APP)
 
 # CHARSET_FLAGS= -finput-charset=ISO-8859-1 \
