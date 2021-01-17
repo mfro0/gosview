@@ -63,7 +63,9 @@ CSRCS=\
 	$(SRCDIR)/gosview.c \
 	$(SRCDIR)/global.c \
 	$(SRCDIR)/window.c \
+	$(SRCDIR)/statwindow.c \
 	$(SRCDIR)/util.c \
+	$(SRCDIR)/os_stat.c \
 	\
 	$(SRCDIR)/natfeats.c
 
@@ -111,7 +113,7 @@ $(1)_OBJS=$(patsubst %,$(1)/objs/%,$(OBJS))
 $(1)/$(APP): $$($(1)_OBJS)
 	$(Q)echo "CC $$<"
 	$(Q)$(CC) $$(CFLAGS) --traditional -o $$@ $(LIBCMINI_LIB)/crt0.o $$($(1)_OBJS) -L$(LIBCMINI_LIB)/$(1) $(LIBS)
-	$(Q)$(STRIP) $$@
+	#$(Q)$(STRIP) $$@
 endef
 $(foreach DIR,$(TRGTDIRS),$(eval $(call CC_TEMPLATE,$(DIR))))
 
