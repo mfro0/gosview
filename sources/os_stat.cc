@@ -1,11 +1,11 @@
-#include <stdio.h>
+#include <cstdio>
 #include <mint/mintbind.h>
+#include <stdlib.h>
 
 #define DEBUG
 #ifdef DEBUG
-#include "natfeats.h"
-#define dbg(format, arg...) do { nf_printf("DEBUG: (%s):" format, __FUNCTION__, ##arg); } while (0)
-#define out(format, arg...) do { nf_printf("" format, ##arg); } while (0)
+#define dbg(format, arg...) do { fprintf(stderr, "DEBUG: (%s):" format, __FUNCTION__, ##arg); } while (0)
+#define out(format, arg...) do { fprintf(stderr, "" format, ##arg); } while (0)
 #else
 #define dbg(format, arg...) do { ; } while (0)
 #endif /* DEBUG */
@@ -76,8 +76,8 @@ void os_stat(void)
         buff[sz] = '\0';
         dbg("buff=%s", buff);
         sscanf(buff, "cpu %ld %ld %ld %ld",
-           &gl_st.stat.user, &gl_st.stat.sys,
-           &gl_st.stat.nice, &gl_st.stat.other);
+           &gl_st.stat.user, &gl_st.stat.nice,
+           &gl_st.stat.sys, &gl_st.stat.other);
         Fclose(fh);
         dbg("stat: user: %ld, sys: %ld, nice: %ld, other: %ld\r\n",
             gl_st.stat.user, gl_st.stat.sys, gl_st.stat.nice, gl_st.stat.other);
