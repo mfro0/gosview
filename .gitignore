@@ -1,1 +1,12 @@
+gosview.cflags
+gosview.config
+gosview.creator
+gosview.creator*
+depend
+gosview.cxxflags
+gosview.files
+gosview.includes
 *.user
+*.o
+*.app
+mapfile

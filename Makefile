@@ -64,6 +64,7 @@ CCSRCS=\
 	$(SRCDIR)/statwindow.cc \
 	$(SRCDIR)/util.cc \
 	$(SRCDIR)/meter.cc \
+	$(SRCDIR)/fieldmeter.cc \
 	$(SRCDIR)/os_stat.cc
 
 CSRCS = \
