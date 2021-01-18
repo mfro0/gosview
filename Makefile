@@ -51,7 +51,6 @@ CFLAGS= \
 	-DFORCE_GEMLIB_UDEF \
 	-Wl,-Map,mapfile \
 	-Wall \
-	-msoft-float \
 	$(CHARSET_FLAGS)
 
 SRCDIR=sources
@@ -59,11 +58,12 @@ INCDIR=include
 INCLUDE+=-I/usr/m68k-atari-mint/include/c++/4.6.4/m68k-atari-mint/ -I$(INCDIR)
 
 CCSRCS=\
-	$(SRCDIR)/gosview.cc \
+	$(SRCDIR)/osview.cc \
 	$(SRCDIR)/global.cc \
 	$(SRCDIR)/window.cc \
 	$(SRCDIR)/statwindow.cc \
 	$(SRCDIR)/util.cc \
+	$(SRCDIR)/meter.cc \
 	$(SRCDIR)/os_stat.cc
 
 CSRCS = \
@@ -79,7 +79,7 @@ COBJS=$(patsubst $(SRCDIR)/%.o,%.o,$(patsubst %.c,%.o,$(CSRCS)))
 AOBJS=$(patsubst $(SRCDIR)/%.o,%.o,$(patsubst %.S,%.o,$(ASRCS)))
 OBJS=$(CCOBJS) $(COBJS) $(AOBJS)
 
-TRGTDIRS=. ./m68020-60 ./m5475 
+TRGTDIRS=. ./m68020-60 ./m5475
 OBJDIRS=$(patsubst %,%/objs,$(TRGTDIRS))
 
 #

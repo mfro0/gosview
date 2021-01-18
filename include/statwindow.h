@@ -13,7 +13,7 @@ public:
     virtual void draw(short x, short y, short w, short h);
     virtual void timer(void);
 private:
-    short pattern_type;
+    short pattern_index;
 };
 
 #define STATWINDOW_WINELEMENTS SIZER|MOVER|FULLER|CLOSER|NAME

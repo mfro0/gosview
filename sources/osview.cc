@@ -60,13 +60,6 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-static int timer_cb(window *wi)
-{
-    wi->timer();
-
-    return 0;
-}
-
 /*
  *  AES event dispatcher
  */
@@ -76,7 +69,7 @@ static void multi(void)
     short keystate;
     short keyreturn;
     short mbreturn;
-    long msec = 100;
+    long msec = 200;
 
 
     do

@@ -15,16 +15,12 @@
 #define dbg(format, arg...) do { ; } while (0)
 #endif /* DEBUG */
 
-static void draw_statwindow(struct window *wi, short x, short y, short w, short h);
-static void timer_statwindow(struct window *wi);
-static void delete_statwindow(struct window *wi);
-
 /*
  * create a new window and add it to the window list.
  */
 statwindow::statwindow(short wi_kind, char *title) : window(wi_kind, title)
 {
-    pattern_type = 1;
+    pattern_index = 1;
 
 }
 
@@ -60,7 +56,7 @@ void statwindow::draw(short x, short y, short w, short h)
         scoords[3] += wy + i * 20;
 
         vsf_interior(vh, FIS_PATTERN);
-        vsf_style(vh, pattern_type);
+        vsf_style(vh, pattern_index);
         vsf_perimeter(vh, 1);
         vsf_color(vh, G_BLACK);
 
@@ -75,4 +71,6 @@ void statwindow::draw(short x, short y, short w, short h)
 void statwindow::timer(void)
 {
     os_stat();
+    pattern_index++;
+    send_redraw(work.g_x, work.g_y, work.g_w, work.g_h);
 }
