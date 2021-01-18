@@ -326,9 +326,9 @@ void window::clear(short x, short y, short w, short h)
  */
 void window::send_redraw(short x, short y, short w, short h)
 {
-    short msg[8] = { WM_REDRAW, ap_id, 0, handle, x, y, w, h };
+    short msg[8] = { WM_REDRAW, gl_apid, 0, handle, x, y, w, h };
 
-    appl_write(ap_id, sizeof(msg), msg);
+    appl_write(gl_apid, sizeof(msg), msg);
 }
 
 

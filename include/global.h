@@ -29,8 +29,6 @@ extern short work_out[57];	/* Output from GSX parameter array */
 extern short ext_out[57];
 extern short pxyarray[10];	/* input poshort array */
 
-extern short ap_id;
-
 extern short window_open_pos_x;	/* where to open new windows */
 extern short window_open_pos_y;
 

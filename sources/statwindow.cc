@@ -55,10 +55,9 @@ void statwindow::draw(short x, short y, short w, short h)
         scoords[2] += wx + i * 13;
         scoords[3] += wy + i * 20;
 
-        vsf_interior(vh, FIS_PATTERN);
-        vsf_style(vh, pattern_index);
+        vsf_interior(vh, FIS_SOLID);
+        vsf_color(vh, pattern_index);
         vsf_perimeter(vh, 1);
-        vsf_color(vh, G_BLACK);
 
         v_bar(vh, scoords);
     }

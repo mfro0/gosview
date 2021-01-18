@@ -9,26 +9,27 @@
 #include "meter.h"
 #include "osview.h"
 
-class FieldMeter : public Meter {
+class FieldMeter : public Meter
+{
 public:
-    FieldMeter( XOSView *parent, int numfields,
-                const char *title = "", const char *legend = "",
-                int docaptions = 0, int dolegends = 0, int dousedlegends = 0 );
-    virtual ~FieldMeter( void );
+    FieldMeter(XOSView *parent, int numfields,
+               const char *title = "", const char *legend = "",
+               int docaptions = 0, int dolegends = 0, int dousedlegends = 0);
+    virtual ~FieldMeter(void);
 
-    virtual void drawfields( int mandatory = 0 );
-    void setfieldcolor( int field, const char *color );
-    void setfieldcolor( int field, unsigned long color);
-    void docaptions( int val ) { docaptions_ = val; }
-    void dolegends( int val ) { dolegends_ = val; }
-    void dousedlegends( int val ) { dousedlegends_ = val; }
-    void reset( void );
-    void setUsed (double val, double total);
-    void draw( void );
-    void checkevent( void );
-    void disableMeter ( void );
+    virtual void drawfields(int mandatory = 0);
+    void setfieldcolor(int field, const char *color);
+    void setfieldcolor(int field, unsigned long color);
+    void docaptions(int val) { docaptions_ = val; }
+    void dolegends(int val) { dolegends_ = val; }
+    void dousedlegends(int val) { dousedlegends_ = val; }
+    void reset(void);
+    void setUsed(double val, double total);
+    void draw(void);
+    void checkevent(void);
+    void disableMeter(void);
 
-    virtual void checkResources( void );
+    virtual void checkResources(void);
 
 protected:
     enum UsedType { INVALID_0, FLOAT, PERCENT, AUTOSCALE, INVALID_TAIL };
@@ -45,9 +46,9 @@ protected:
     bool metric_;
     int usedoffset_;
 
-    void SetUsedFormat ( const char * const str );
-    void drawlegend( void );
-    void drawused( int mandatory );
+    void SetUsedFormat(const char * const str);
+    void drawlegend(void);
+    void drawused(int mandatory);
     bool checkX(int x, int width) const;
 
     void setNumFields(int n);
