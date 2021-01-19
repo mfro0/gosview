@@ -8,7 +8,7 @@
 //
 
 #include "fieldmetergraph.h"
-#include "xosview.h"
+#include "osview.h"
 
 
 class CPUMeter : public FieldMeterGraph {

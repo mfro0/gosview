@@ -13,7 +13,7 @@
 //
 
 #include "fieldmeterdecay.h"
-#include "xosview.h"
+#include "osview.h"
 
 
 class FieldMeterGraph : public FieldMeterDecay {
