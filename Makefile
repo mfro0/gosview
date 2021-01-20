@@ -66,6 +66,7 @@ CCSRCS=\
 	$(SRCDIR)/meter.cc \
 	$(SRCDIR)/fieldmeter.cc \
 	$(SRCDIR)/fieldmeterdecay.cc \
+	$(SRCDIR)/fieldmetergraph.cc \
 	$(SRCDIR)/cpumeter.cc \
 	$(SRCDIR)/os_stat.cc
 

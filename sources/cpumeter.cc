@@ -103,154 +103,32 @@ void CPUMeter::checkResources(void)
     std::string lgnd, fields(f);
     int field = 0;
 
-    /* Check for possible fields and define field mapping. Assign colors and
-     * build legend on the way.
-     */
-    if (fields.find("USED") != fields.npos)
-    {
-        // USED = USR+NIC+SYS+SI+HI+GST+NGS(+STL)
-        if (fields.find("USR") != fields.npos || fields.find("NIC") != fields.npos ||
-                fields.find("SYS") != fields.npos || fields.find("INT") != fields.npos ||
-                fields.find("HI")  != fields.npos || fields.find("SI")  != fields.npos ||
-                fields.find("GST") != fields.npos || fields.find("NGS") != fields.npos)
-        {
-            std::cerr << "'USED' cannot be in cpuFields together with either 'USR', "
-                << "'NIC', 'SYS', 'INT', 'HI', 'SI', 'GST' or 'NGS'." << std::endl;
-            exit(1);
-        }
-        setfieldcolor(field, usercolor);
-        if (kernel_ >= 2006000) // SI and HI
-            cputime_to_field[5] = cputime_to_field[6] = field;
-        if (kernel_ >= 2006024) // GST
-            cputime_to_field[8] = field;
-        if (kernel_ >= 2006032) // NGS
-            cputime_to_field[9] = field;
-        if (kernel_ >= 2006011 && fields.find("STL") == fields.npos)
-            cputime_to_field[7] = field; // STL can be separate as well
-        // USR, NIC and SYS
-        cputime_to_field[0] = cputime_to_field[1] = cputime_to_field[2] = field++;
-        lgnd = "USED";
-    }
-
     if (fields.find("USR") != fields.npos)
     {
         setfieldcolor(field, usercolor);
         // add NIC if not on its own
         if (fields.find("NIC") == fields.npos)
             cputime_to_field[1] = field;
-        // add GST if not on its own
-        if (kernel_ >= 2006024 && fields.find("GST") == fields.npos)
-            cputime_to_field[8] = field;
-        // add NGS if not on its own and neither NIC or GST is present
-        if (kernel_ >= 2006032 && fields.find("NGS") == fields.npos &&
-                fields.find("NIC") == fields.npos && fields.find("GST") == fields.npos)
-            cputime_to_field[9] = field;
         cputime_to_field[0] = field++;
         lgnd = "USR";
-    }
-    else
-    {
-        if (fields.find("USED") == fields.npos)
-        {
-            std::cerr << "Either 'USED' or 'USR' is mandatory in cpuFields." << std::endl;
-            exit(1);
-        }
     }
 
     if (fields.find("NIC") != fields.npos)
     {
         setfieldcolor(field, nicecolor);
-        // add NGS if not on its own and GST is not present
-        if (kernel_ >= 2006032 && fields.find("NGS") == fields.npos &&
-                fields.find("GST") == fields.npos)
-            cputime_to_field[9] = field;
         cputime_to_field[1] = field++;
         lgnd += "/NIC";
     }
     if (fields.find("SYS") != fields.npos)
     {
         setfieldcolor(field, syscolor);
-        // add SI if not on its own and INT is not present
-        if (kernel_ >= 2006000 && fields.find("SI") == fields.npos &&
-                fields.find("INT") == fields.npos)
-            cputime_to_field[6] = field;
-        // add HI if not on its own and INT is not present
-        if (kernel_ >= 2006000 && fields.find("HI") == fields.npos &&
-                fields.find("INT") == fields.npos)
-            cputime_to_field[5] = field;
-        // add STL if not on its own
-        if (kernel_ >= 2006011 && fields.find("STL") == fields.npos)
-            cputime_to_field[7] = field;
         cputime_to_field[2] = field++;
         lgnd += "/SYS";
-    }
-    else
-    {
-        if (fields.find("USED") == fields.npos)
-        {
-            std::cerr << "Either 'USED' or 'SYS' is mandatory in cpuFields." << std::endl;
-            exit(1);
-        }
-    }
-    if (kernel_ >= 2006000)
-    {
-        if (fields.find("INT") != fields.npos)
-        {
-            // combine soft and hard interrupt times
-            setfieldcolor(field, intcolor);
-            cputime_to_field[5] = cputime_to_field[6] = field++;
-            lgnd += "/INT";
-        } // Maybe should warn if both INT and HI/SI are requested ???
-        else
-        { // separate soft and hard interrupt times
-            if (fields.find("SI") != fields.npos)
-            {
-                setfieldcolor(field, sintcolor);
-                cputime_to_field[5] = field++;
-                lgnd += "/SI";
-            }
-            if (fields.find("HI") != fields.npos)
-            {
-                setfieldcolor(field, intcolor);
-                cputime_to_field[6] = field++;
-                lgnd += "/HI";
-            }
-        }
-        if (fields.find("WIO") != fields.npos)
-        {
-            setfieldcolor(field, waitcolor);
-            cputime_to_field[4] = field++;
-            lgnd += "/WIO";
-        }
-        if (kernel_ >= 2006024 && fields.find("GST") != fields.npos)
-        {
-            setfieldcolor(field, gstcolor);
-            // add NGS if not on its own
-            if (kernel_ >= 2006032 && fields.find("NGS") == fields.npos)
-                cputime_to_field[9] = field;
-            cputime_to_field[8] = field++;
-            lgnd += "/GST";
-        }
-        if (kernel_ >= 2006032 && fields.find("NGS") != fields.npos)
-        {
-            setfieldcolor(field, ngstcolor);
-            cputime_to_field[9] = field++;
-            lgnd += "/NGS";
-        }
-        if (kernel_ >= 2006011 && fields.find("STL") != fields.npos)
-        {
-            setfieldcolor(field, stealcolor);
-            cputime_to_field[7] = field++;
-            lgnd += "/STL";
-        }
     }
 
     // always add IDLE field
     setfieldcolor(field, idlecolor);
 
-    // add WIO if not on its own
-    if (kernel_ >= 2006000 && fields.find("WIO") == fields.npos)
-        cputime_to_field[4] = field;
     cputime_to_field[3] = field++;
     lgnd += "/IDLE";
 
